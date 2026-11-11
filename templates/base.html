@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}Новичок{% endblock %}</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a href="/" class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Новичок</a>
+      {% if demo_path %}
+        <nav class="role-nav" aria-label="Экраны демо">
+          <a href="{{ demo_path }}/newcomer"{% if role == 'newcomer' %} aria-current="page"{% endif %}>Новичок</a>
+          <a href="{{ demo_path }}/mentor"{% if role == 'mentor' %} aria-current="page"{% endif %}>Наставник</a>
+        </nav>
+      {% endif %}
+    </div>
+  </header>
+  <main class="shell">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

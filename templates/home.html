@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Новичок — первая смена на складе{% endblock %}
+{% block content %}
+<section class="welcome">
+  <div class="welcome-copy">
+    <p class="context">Демо · Склад «Север»</p>
+    <h1>Первая смена<br>на складе</h1>
+    <p class="intro">Пройди чек-лист комплектовщика и обратись к наставнику, если на каком-то шаге нужна помощь.</p>
+    <form action="/demo" method="post">
+      <button class="button primary start" type="submit">Начать демо <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="small muted demo-note">Для каждого запуска создаётся своя смена. Все данные вымышлены.</p>
+  </div>
+  <aside class="shift-preview" aria-label="Участники смены">
+    <p class="preview-heading">Утренняя смена <span>08:00–16:00</span></p>
+    <div class="preview-steps" aria-hidden="true">
+      {% for _ in range(step_count) %}<span></span>{% endfor %}
+    </div>
+    <dl class="preview-people">
+      <div><dt>Новичок</dt><dd>Артём Левин</dd></div>
+      <div><dt>Наставник</dt><dd>Марина Савич</dd></div>
+    </dl>
+  </aside>
+</section>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Запросы наставнику — Новичок{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <p class="context">Склад «Север» · Утренняя смена</p>
+  <h1>Запросы наставнику</h1>
+  <p class="muted">Марина Савич · Наставник</p>
+</div>
+<div class="shift-layout">
+  <aside class="shift-sidebar" aria-label="Карточка новичка">
+    <section class="progress-panel">
+      <div class="progress-label"><h2>Прогресс новичка</h2><strong>{{ shift.done_count }} из {{ shift.steps|length }}</strong></div>
+      <progress max="{{ shift.steps|length }}" value="{{ shift.done_count }}" aria-label="Выполнено шагов"></progress>
+    </section>
+    <dl class="shift-meta">
+      <div><dt>Новичок</dt><dd>Артём Левин · Комплектовщик</dd></div>
+      <div><dt>Задача о приёме в Битрикс24</dt><dd>DEMO-1042 <span class="small muted">· вымышленная</span></dd></div>
+    </dl>
+  </aside>
+  <section class="shift-body" aria-labelledby="requests-heading">
+    <div class="section-heading">
+      <h2 id="requests-heading">Открытые запросы <span class="count">{{ shift.open_requests|length }}</span></h2>
+      <a class="quiet-link" href="{{ demo_path }}/mentor">Обновить</a>
+    </div>
+    {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+    {% if not shift.open_requests %}
+      <p class="empty">Открытых запросов нет.</p>
+    {% endif %}
+    <ul class="requests">
+      {% for ticket in shift.open_requests %}
+        <li class="ticket">
+          <p class="ticket-context">Артём Левин · <time datetime="{{ ticket.opened_at }}">{{ ticket.opened_at|local_time }}</time></p>
+          <h3>{{ step_titles[ticket.step] }}</h3>
+          <div class="message pending"><strong>Запрос новичка</strong><p>{{ ticket.note }}</p></div>
+          <form class="message-form" action="{{ demo_path }}/mentor/{{ ticket.id }}/close" method="post">
+            <label for="answer-{{ ticket.id }}">Что делать новичку дальше?</label>
+            <textarea id="answer-{{ ticket.id }}" name="answer" required maxlength="{{ max_message_length }}" rows="2" placeholder="Например, доступ выдан, войди повторно"></textarea>
+            <button class="button primary" type="submit">Ответить и закрыть запрос</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+    {% if shift.closed_requests %}
+      <h2 class="history-heading">Закрытые запросы</h2>
+      <ul class="requests">
+        {% for ticket in shift.closed_requests %}
+          <li class="ticket">
+            <p class="ticket-context">Артём Левин · <time datetime="{{ ticket.closed_at }}">{{ ticket.closed_at|local_time }}</time></p>
+            <h3>{{ step_titles[ticket.step] }}</h3>
+            <div class="message"><strong>Запрос новичка</strong><p>{{ ticket.note }}</p></div>
+            <div class="message answered"><strong>Ответ наставника</strong><p>{{ ticket.answer }}</p></div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

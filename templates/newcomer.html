@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Моя первая смена — Новичок{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <p class="context">Склад «Север» · Утренняя смена</p>
+  <h1>Моя первая смена</h1>
+  <p class="muted">Артём Левин · Комплектовщик</p>
+</div>
+<div class="shift-layout">
+  <aside class="shift-sidebar" aria-label="Карточка смены">
+    <section class="progress-panel">
+      <div class="progress-label"><h2>Прогресс смены</h2><strong>{{ shift.done_count }} из {{ shift.steps|length }}</strong></div>
+      <progress max="{{ shift.steps|length }}" value="{{ shift.done_count }}" aria-label="Выполнено шагов"></progress>
+      {% if shift.done_count == shift.steps|length %}<p class="progress-note">Все шаги выполнены.</p>{% endif %}
+    </section>
+    <dl class="shift-meta">
+      <div><dt>Наставник</dt><dd>Марина Савич</dd></div>
+      <div><dt>Задача о приёме в Битрикс24</dt><dd>DEMO-1042 <span class="small muted">· вымышленная</span></dd></div>
+    </dl>
+  </aside>
+  <section class="shift-body" aria-labelledby="steps-heading">
+    <div class="section-heading">
+      <h2 id="steps-heading">Шаги смены</h2>
+      <a class="quiet-link" href="{{ demo_path }}/newcomer">Обновить</a>
+    </div>
+    {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+    <ol class="steps">
+      {% for step in shift.steps %}
+        {% set waiting = step.ticket and not step.ticket.closed_at %}
+        <li class="step{% if waiting %} waiting{% endif %}" id="step-{{ step.number }}">
+          <div class="step-number" aria-hidden="true">{{ "✓" if step.done else "%02d"|format(step.number) }}</div>
+          <div class="step-content">
+            <div class="step-heading">
+              <h3>{{ step.title }}</h3>
+              {% if step.done %}<span class="status complete">Выполнено</span>{% endif %}
+              {% if waiting %}<span class="status pending">Ждёт ответа</span>{% endif %}
+            </div>
+            <p class="step-instruction">{{ step.instruction }}</p>
+            {% if waiting %}
+              <div class="message pending"><strong>Запрос наставнику</strong><p>{{ step.ticket.note }}</p></div>
+            {% elif step.ticket %}
+              <div class="message answered"><strong>Ответ наставника</strong><p>{{ step.ticket.answer }}</p></div>
+            {% endif %}
+            {% if not step.done and not waiting %}
+              <div class="step-actions">
+                <form action="{{ demo_path }}/newcomer/{{ step.number }}/complete" method="post">
+                  <button class="button outline" type="submit">Отметить выполненным</button>
+                </form>
+                <details class="help">
+                  <summary>Нужна помощь</summary>
+                  <form class="message-form" action="{{ demo_path }}/newcomer/{{ step.number }}/ask" method="post">
+                    <label for="note-{{ step.number }}">Что мешает выполнить шаг?</label>
+                    <textarea id="note-{{ step.number }}" name="note" required maxlength="{{ max_message_length }}" rows="2" placeholder="Например, терминал не пускает в систему"></textarea>
+                    <button class="button primary" type="submit">Отправить наставнику</button>
+                  </form>
+                </details>
+              </div>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ol>
+  </section>
+</div>
+{% endblock %}
