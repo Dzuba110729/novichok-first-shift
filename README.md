@@ -10,7 +10,7 @@
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-python -m uvicorn app:app
+python -m uvicorn main:app
 ```
 
 Откройте [http://127.0.0.1:8000](http://127.0.0.1:8000). Файл SQLite создаётся при первом запуске в `data/shift.sqlite3`. Путь можно задать через `DB_PATH`.
@@ -27,7 +27,7 @@ python -m uvicorn app:app
 
 ## Размещение на Railway
 
-Подключите репозиторий к одному веб-сервису Railway, подключите постоянный диск по пути `/data` и задайте `DB_PATH=/data/shift.sqlite3`. Команда запуска и проверка готовности уже заданы в `railway.toml`. Публичный адрес выдаёт **Generate Domain** в настройках сети сервиса.
+Подключите репозиторий к одному веб-сервису Railway, подключите постоянный диск по пути `/data` и задайте `DB_PATH=/data/shift.sqlite3`. Railway автоматически запускает `main:app`. Готовность приложения можно проверить по адресу `/health`. Публичный адрес выдаёт **Generate Domain** в настройках сети сервиса.
 
 ## Границы демо
 
